@@ -1,8 +1,11 @@
 {
   "name": "سلّم الفينيكس",
   "size": 200,
-  "startAccounts": 1,
-  "startWallet": 0,
-  "targets": [5, 13],
+  "startAccounts": 2,
+  "startWallet": 138,
+  "targets": [
+    5,
+    13
+  ],
   "entries": []
 }
