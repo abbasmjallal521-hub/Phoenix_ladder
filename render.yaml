@@ -1,0 +1,21 @@
+services:
+  # The page everyone opens. Static = never sleeps, opens instantly.
+  - type: web
+    name: phoenix-ladder
+    runtime: static
+    buildCommand: "true"
+    staticPublishPath: ./public
+  # Saves new days. Free plan sleeps when idle; the page wakes it in the background.
+  - type: web
+    name: phoenix-ladder-api
+    runtime: node
+    plan: free
+    buildCommand: "true"
+    startCommand: node server.js
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_REPO
+        value: abbasmjallal521-hub/Phoenix_ladder

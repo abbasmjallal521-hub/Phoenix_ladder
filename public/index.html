@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>سلّم الفينيكس</title>
+<meta name="theme-color" content="#130E1C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700&display=swap">
+<style>
+/* Single dark theme: ember on deep plum, poster headline */
+:root{
+  --bg:#130E1C; --bg2:#1C1428; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
+  --fg:#F4EEF7; --muted:#A99BB5; --ember:#FF6A2B; --gold:#FFB648; --up:#4CD9A0; --up-soft:rgba(76,217,160,.14);
+  --slot:rgba(255,255,255,.07); --down:#FF6B6B; --flame:linear-gradient(135deg,#FF4E2B 0%,#FF8A2B 45%,#FFC14D 100%);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;color:var(--fg);font:15px/1.65 "Tajawal",system-ui,-apple-system,sans-serif;
+  background:radial-gradient(120% 60% at 50% -10%,rgba(255,106,43,.22),transparent 60%),linear-gradient(var(--bg),var(--bg2));background-attachment:fixed}
+.wrap{max-width:500px;margin:0 auto;padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+header{text-align:center}
+h1{font:400 2.1rem/1.1 "Lalezar","Tajawal",sans-serif;margin:0;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.01em}
+h2{font:700 1.02rem "Tajawal",sans-serif;margin:0}
+.sub{color:var(--muted);font-size:.82rem}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.hero{text-align:center;gap:4px;padding:24px 18px;border-color:rgba(255,138,43,.35)}
+.hero .n{font:400 5.5rem/1 "Lalezar",sans-serif;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .l{color:var(--muted);font-weight:500}
+.ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:7px;margin-top:14px}
+.slot{aspect-ratio:1;border-radius:50%;background:var(--slot);display:grid;place-items:center;font-size:.72rem;color:var(--muted);font-weight:700}
+.slot.on{background:var(--flame);color:#2A1206;box-shadow:0 0 14px rgba(255,120,43,.45)}
+.slot.ms{outline:2px solid var(--gold);outline-offset:2px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.big{font:400 2.2rem/1.1 "Lalezar",sans-serif;color:var(--fg)}
+.bar{height:12px;background:var(--slot);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--flame);border-radius:99px;transition:width .7s}
+.t{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.t:first-of-type{border-top:0}
+.pill{font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:99px;white-space:nowrap}
+.done{background:var(--up-soft);color:var(--up)}
+.next{background:rgba(255,138,43,.16);color:var(--gold)}
+.later{background:var(--slot);color:var(--muted)}
+.day{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.day:first-child{border-top:0}
+.day .amt{color:var(--up);font-weight:700}
+.day .amt.z{color:var(--muted);font-weight:400}
+.tag{font-size:.74rem;color:var(--gold);font-weight:700}
+.note{font-size:.8rem;color:var(--muted)}
+.foot{text-align:center;color:var(--muted);font-size:.78rem;display:flex;flex-direction:column;gap:6px;align-items:center}
+.msg{background:rgba(255,138,43,.14);border:1px solid rgba(255,138,43,.3);border-radius:14px;padding:12px;font-size:.92rem;text-align:center}
+form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--muted);min-width:0}
+.full{grid-column:1/-1}
+input{font:inherit;font-size:16px;color:var(--fg);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:11px 12px;width:100%;min-width:0}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 14px;cursor:pointer;background:var(--flame);color:#2A1206}
+button:disabled{opacity:.6}
+.link{background:none;color:var(--muted);font-weight:500;font-size:.8rem;padding:4px 8px;text-decoration:underline}
+.del{background:none;color:var(--muted);font-weight:500;font-size:.8rem;padding:4px 8px}
+.del.arm{color:var(--down)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+details summary{cursor:pointer;font:700 1.02rem "Tajawal",sans-serif;list-style:none}
+details summary::-webkit-details-marker{display:none}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1 id="name">سلّم الفينيكس</h1>
+    <div class="sub">كل حساب <span class="num" id="size">$200</span> · بتتحدّث لحالها</div>
+  </header>
+
+  <div class="msg" id="msg" hidden></div>
+
+  <!-- recorder only -->
+  <section class="card" id="addCard" hidden>
+    <h2>سجّل سحب اليوم</h2>
+    <form id="addForm">
+      <label>التاريخ<input id="fDate" type="date" required></label>
+      <label>الربح يلي سحبته ($)<input id="fAmt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="مثلاً 85" required></label>
+      <label class="full">ملاحظة (اختياري)<input id="fNote" maxlength="80" placeholder="مثلاً: يوم خسارة"></label>
+      <button class="full" type="submit" id="addBtn">سجّل</button>
+    </form>
+  </section>
+
+  <section class="card hero">
+    <div class="n num" id="acc">–</div>
+    <div class="l">حساب هلق</div>
+    <div class="ladder" id="ladder"></div>
+  </section>
+
+  <section class="card">
+    <div class="row"><span>بالواليت</span><span class="sub">باقي <span class="num" id="remain">–</span> للحساب الجاي</span></div>
+    <div class="big num" id="wallet">–</div>
+    <div class="bar"><i id="bar"></i></div>
+  </section>
+
+  <section class="card" id="targets"></section>
+
+  <section class="card">
+    <div class="row"><h2>آخر الأيام</h2><span class="sub">المجموع <span class="num" id="total">–</span></span></div>
+    <div id="days"><div class="note">عم يحمّل…</div></div>
+  </section>
+
+  <!-- recorder only -->
+  <details class="card" id="setCard" hidden>
+    <summary>الإعدادات</summary>
+    <form id="setForm">
+      <label class="full">اسم الخطة<input id="xName" maxlength="40"></label>
+      <label>كم حساب بلّشنا فيهن<input id="xAcc" type="number" inputmode="numeric" min="0"></label>
+      <label>واليت البداية ($)<input id="xWal" type="number" inputmode="decimal" min="0" step="0.01"></label>
+      <label>حجم الحساب ($)<input id="xSize" type="number" inputmode="decimal" min="1"></label>
+      <label>التارغتات<input id="xT" inputmode="numeric" placeholder="5, 13"></label>
+      <button class="full" type="submit">احفظ</button>
+    </form>
+  </details>
+
+  <div class="foot">
+    <span id="upd"></span>
+    <button class="link" type="button" id="loginBtn">دخول المسجّل</button>
+    <form id="loginForm" hidden style="grid-template-columns:1fr auto;width:100%;max-width:320px">
+      <input id="pw" type="password" placeholder="كلمة السر" autocomplete="current-password">
+      <button type="submit">دخول</button>
+    </form>
+  </div>
+</main>
+
+<script>
+var $ = function(id){ return document.getElementById(id); };
+var money = function(v){ return "$" + (Math.round(v * 100) / 100).toLocaleString("en-US"); };
+var ORD = ["الأول","التاني","التالت","الرابع","الخامس","السادس"];
+// Where things live. API = the Render web service that saves; DATA = the file in GitHub that everyone reads.
+var API = "https://phoenix-ladder-api.onrender.com";
+var DATA = "https://api.github.com/repos/abbasmjallal521-hub/Phoenix_ladder/contents/data.json?ref=main";
+var RAW = "https://raw.githubusercontent.com/abbasmjallal521-hub/Phoenix_ladder/main/data.json";
+var D = null, pw = null;
+try { pw = localStorage.getItem("pl-pw"); D = JSON.parse(localStorage.getItem("pl-data") || "null"); } catch(e) {}
+function keep(j){ D = j; try { localStorage.setItem("pl-data", JSON.stringify(j)); } catch(e) {} }
+// wake the save server in the background so recording is quick when needed
+function wake(){ fetch(API + "/api/ping", { mode: "no-cors", cache: "no-store" }).catch(function(){}); }
+
+function msg(t){ var m = $("msg"); m.textContent = t || ""; m.hidden = !t; }
+function today(){ var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+
+function post(action, body){
+  body = body || {}; body.password = pw;
+  return fetch(API + "/api/" + action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw new Error(j.error || "خطأ"); return j; }); });
+}
+
+function render(){
+  if (!D) return;
+  var acc = +D.startAccounts || 0, wal = +D.startWallet || 0, size = +D.size || 200, total = 0, days = [];
+  D.entries.slice().sort(function(a,b){ return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; }).forEach(function(e){
+    total += e.amt; wal += e.amt; var o = 0;
+    while (wal >= size) { wal -= size; acc++; o++; }
+    days.push({ id: e.id, d: e.d, a: e.amt, note: e.note, opened: o });
+  });
+  var T = D.targets || [5, 13];
+  $("name").textContent = D.name; document.title = D.name;
+  $("size").textContent = money(size);
+  $("acc").textContent = acc;
+  var top = Math.max(acc, T[T.length - 1] || acc), h = "";
+  for (var i = 1; i <= top; i++) h += '<div class="slot' + (i <= acc ? " on" : "") + (T.indexOf(i) >= 0 ? " ms" : "") + '">' + i + "</div>";
+  $("ladder").innerHTML = h;
+  $("wallet").textContent = money(wal);
+  $("remain").textContent = money(size - wal);
+  $("bar").style.width = Math.min(100, wal / size * 100) + "%";
+  $("total").textContent = money(total);
+
+  var found = false, th = "<h2>التارغتات</h2>";
+  T.forEach(function(t, k){
+    var cls = acc >= t ? "done" : (!found ? (found = true, "next") : "later");
+    var txt = acc >= t ? "✓ وصلنا" : "باقي " + (t - acc) + " حساب";
+    th += '<div class="t"><span>التارغت ' + (ORD[k] || k + 1) + ': <b class="num">' + t + '</b> حسابات</span><span class="pill ' + cls + '">' + txt + "</span></div>";
+  });
+  th += '<div class="t"><span>التارغت ' + (ORD[T.length] || "") + '</span><span class="pill later">بعدين</span></div>';
+  $("targets").innerHTML = th;
+
+  var admin = !!pw, box = $("days"); box.textContent = "";
+  var list = days.slice().reverse().slice(0, admin ? 60 : 10);
+  if (!list.length) box.innerHTML = '<div class="note">لسا ما في أيام مسجّلة.</div>';
+  list.forEach(function(d){
+    var row = document.createElement("div"); row.className = "day";
+    var left = document.createElement("div");
+    var dt = document.createElement("div"); dt.className = "num"; dt.textContent = d.d; left.appendChild(dt);
+    if (d.opened) { var tg = document.createElement("div"); tg.className = "tag"; tg.textContent = "+" + d.opened + " حساب جديد"; left.appendChild(tg); }
+    if (d.note) { var n = document.createElement("div"); n.className = "note"; n.textContent = d.note; left.appendChild(n); }
+    var right = document.createElement("div"); right.style.cssText = "display:flex;align-items:center;gap:4px";
+    var am = document.createElement("span"); am.className = "amt num" + (d.a ? "" : " z"); am.textContent = money(d.a); right.appendChild(am);
+    if (admin) { var del = document.createElement("button"); del.className = "del"; del.type = "button"; del.textContent = "امسح"; del.dataset.id = d.id; right.appendChild(del); }
+    row.appendChild(left); row.appendChild(right); box.appendChild(row);
+  });
+
+  $("addCard").hidden = !admin; $("setCard").hidden = !admin;
+  $("loginBtn").textContent = admin ? "طلوع من وضع المسجّل" : "دخول المسجّل";
+  if (admin && !$("fDate").value) $("fDate").value = today();
+  if (admin && document.activeElement.form !== $("setForm")) {
+    $("xName").value = D.name; $("xAcc").value = D.startAccounts; $("xWal").value = D.startWallet; $("xSize").value = D.size; $("xT").value = T.join(", ");
+  }
+  $("upd").textContent = "آخر تحديث " + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+}
+
+function load(){
+  fetch(DATA, { headers: { Accept: "application/vnd.github.raw" }, cache: "no-store" })
+    .then(function(r){ if (!r.ok) throw 0; return r.json(); })
+    .catch(function(){ return fetch(RAW + "?t=" + Date.now()).then(function(r){ if (!r.ok) throw 0; return r.json(); }); })
+    .then(function(j){ keep(j); msg(""); render(); })
+    .catch(function(){ if (!D) msg("ما قدرت أجيب الأرقام، تأكد من النت."); });
+}
+
+$("addForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var btn = $("addBtn"); btn.disabled = true; msg("عم يحفظ… (أول مرة بالنهار ممكن تاخد دقيقة)");
+  post("entry", { d: $("fDate").value, amt: $("fAmt").value, note: $("fNote").value.trim() })
+    .then(function(j){ keep(j); $("fAmt").value = ""; $("fNote").value = ""; render(); msg("انسجّل ✓"); setTimeout(function(){ msg(""); }, 2500); })
+    .catch(function(e){ msg(e.message); })
+    .finally(function(){ btn.disabled = false; });
+});
+
+$("days").addEventListener("click", function(ev){
+  var b = ev.target.closest(".del"); if (!b) return;
+  if (!b.classList.contains("arm")) { b.classList.add("arm"); b.textContent = "أكيد؟"; setTimeout(function(){ b.classList.remove("arm"); b.textContent = "امسح"; }, 3000); return; }
+  post("delete", { id: b.dataset.id }).then(function(j){ keep(j); render(); }).catch(function(e){ msg(e.message); });
+});
+
+$("setForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  post("settings", {
+    name: $("xName").value.trim(), startAccounts: $("xAcc").value, startWallet: $("xWal").value, size: $("xSize").value,
+    targets: $("xT").value.split(/[,،\s]+/).map(Number).filter(function(n){ return n > 0; })
+  }).then(function(j){ keep(j); render(); msg("انحفظ ✓"); setTimeout(function(){ msg(""); }, 2500); }).catch(function(e){ msg(e.message); });
+});
+
+$("loginBtn").addEventListener("click", function(){
+  if (pw) { pw = null; try { localStorage.removeItem("pl-pw"); } catch(e) {} render(); return; }
+  $("loginForm").hidden = !$("loginForm").hidden;
+  if (!$("loginForm").hidden) { $("loginForm").style.display = "grid"; $("pw").focus(); }
+});
+
+$("loginForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var p = $("pw").value;
+  msg("لحظة…");
+  fetch(API + "/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: p }) })
+    .then(function(r){
+      if (!r.ok) throw new Error("كلمة السر غلط");
+      pw = p; try { localStorage.setItem("pl-pw", p); } catch(e) {}
+      $("pw").value = ""; $("loginForm").hidden = true; $("loginForm").style.display = ""; msg(""); render();
+    }).catch(function(e){ msg(e.message); });
+});
+
+render();
+load();
+wake();
+setInterval(function(){ if (!document.hidden) load(); }, 120000);
+document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
+</script>
+</body>
+</html>
