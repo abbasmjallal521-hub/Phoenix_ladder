@@ -66,6 +66,20 @@ input:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-o
 details summary{cursor:pointer;font:700 1.02rem "Tajawal",sans-serif;list-style:none}
 details summary::-webkit-details-marker{display:none}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+
+/* celebration */
+#party{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:radial-gradient(circle at 50% 60%,rgba(255,90,30,.35),rgba(19,14,28,.85) 70%);cursor:pointer}
+#party canvas{position:absolute;inset:0;width:100%;height:100%}
+#party .boom{position:relative;text-align:center;padding:0 24px;animation:pop .7s cubic-bezier(.2,1.6,.4,1) both}
+#party .bird{font-size:5.5rem;line-height:1;filter:drop-shadow(0 0 24px rgba(255,120,40,.9));animation:flap 1s ease-in-out infinite alternate}
+#party .head{font:400 2.6rem/1.15 "Lalezar",sans-serif;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:10px}
+#party .line{font-size:1.15rem;font-weight:700;color:var(--fg);margin-top:6px}
+#party .tap{font-size:.8rem;color:var(--muted);margin-top:18px}
+.shake{animation:shake .5s ease-in-out 2}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes flap{from{transform:translateY(0) rotate(-6deg) scale(1)}to{transform:translateY(-10px) rotate(6deg) scale(1.08)}}
+@keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-6px,2px)}40%{transform:translate(6px,-2px)}60%{transform:translate(-4px,1px)}80%{transform:translate(4px,-1px)}}
+@media (prefers-reduced-motion:reduce){#party .boom,#party .bird,.shake{animation:none}}
 </style>
 </head>
 <body>
@@ -130,6 +144,15 @@ details summary::-webkit-details-marker{display:none}
     </form>
   </div>
 </main>
+<div id="party" hidden>
+  <canvas id="fx"></canvas>
+  <div class="boom">
+    <div class="bird">🔥</div>
+    <div class="head" id="pHead"></div>
+    <div class="line" id="pLine"></div>
+    <div class="tap" id="pTap"></div>
+  </div>
+</div>
 
 <script>
 var $ = function(id){ return document.getElementById(id); };
@@ -143,6 +166,7 @@ var L = {
     remain:function(n){ return "باقي " + n + " حساب"; }, later:"بعدين", noDays:"لسا ما في أيام مسجّلة.", newAcc:function(n){ return "+" + n + " حساب جديد"; },
     del:"امسح", sure:"أكيد؟", updated:"آخر تحديث ", saving:"عم يحفظ… (أول مرة بالنهار ممكن تاخد دقيقة)", saved:"انسجّل ✓", setSaved:"انحفظ ✓",
     wait:"لحظة…", badPw:"كلمة السر غلط", noNet:"ما قدرت أجيب الأرقام، تأكد من النت.", err:"صار خطأ، جرّب كمان مرة",
+    pHead:"حساب جديد!", pLine:function(n){ return "صاروا " + n + " حسابات 🚀"; }, pTarget:function(n){ return "🏆 وصلنا التارغت: " + n + " حسابات!"; }, pTap:"اكبس لتكمّل",
     ord:["الأول","التاني","التالت","الرابع","الخامس","السادس"] },
   en: { perAcc:"Each account", auto:"Updates automatically", addTitle:"Log today's withdrawal", date:"Date", amt:"Profit withdrawn ($)", amtPh:"e.g. 85",
     note:"Note (optional)", notePh:"e.g. losing day", save:"Log it", accNow:"accounts now", wallet:"In the wallet", left:"", toNext:"left to the next account",
@@ -152,6 +176,7 @@ var L = {
     remain:function(n){ return n + " to go"; }, later:"Later", noDays:"No days logged yet.", newAcc:function(n){ return "+" + n + " new account" + (n > 1 ? "s" : ""); },
     del:"Delete", sure:"Sure?", updated:"Updated ", saving:"Saving… (first save of the day can take a minute)", saved:"Logged ✓", setSaved:"Saved ✓",
     wait:"One moment…", badPw:"Wrong password", noNet:"Couldn't load the numbers. Check your connection.", err:"Something went wrong, try again",
+    pHead:"New account!", pLine:function(n){ return "We're at " + n + " accounts 🚀"; }, pTarget:function(n){ return "🏆 Target hit: " + n + " accounts!"; }, pTap:"Tap to continue",
     ord:["1","2","3","4","5","6"] }
 };
 var lang = "ar";
@@ -169,7 +194,7 @@ var API = "https://phoenix-ladder-api.onrender.com";
 var DATA = "https://api.github.com/repos/abbasmjallal521-hub/Phoenix_ladder/contents/data.json?ref=main";
 var RAW = "https://raw.githubusercontent.com/abbasmjallal521-hub/Phoenix_ladder/main/data.json";
 var D = null, pw = null;
-try { pw = localStorage.getItem("pl-pw"); D = JSON.parse(localStorage.getItem("pl-data") || "null"); } catch(e) {}
+try { pw = localStorage.getItem("pl-pw"); D = JSON.parse(localStorage.getItem("pl-data") || "null"); if (D) D._cached = true; } catch(e) {}
 function keep(j){ D = j; try { localStorage.setItem("pl-data", JSON.stringify(j)); } catch(e) {} }
 // wake the save server in the background so recording is quick when needed
 function wake(){ fetch(API + "/api/ping", { mode: "no-cors", cache: "no-store" }).catch(function(){}); }
@@ -233,6 +258,7 @@ function render(){
   if (admin && document.activeElement.form !== $("setForm")) {
     $("xName").value = D.name; $("xAcc").value = D.startAccounts; $("xWal").value = D.startWallet; $("xSize").value = D.size; $("xT").value = T.join(", ");
   }
+  if (D && !D._cached) checkParty(acc);
   $("upd").textContent = t("updated") + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }
 
@@ -285,6 +311,64 @@ $("loginForm").addEventListener("submit", function(ev){
     }).catch(function(e){ msg(e.message); });
 });
 
+
+// ---- celebration: fire, embers and confetti when the account count goes up ----
+var partyTimer = null, raf = null;
+function celebrate(acc, hitTarget){
+  var box = $("party"), cv = $("fx"), ctx = cv.getContext("2d");
+  $("pHead").textContent = hitTarget ? "🏆" + " " + t("pHead") : t("pHead");
+  $("pLine").textContent = hitTarget ? t("pTarget")(acc) : t("pLine")(acc);
+  $("pTap").textContent = t("pTap");
+  box.hidden = false;
+  document.querySelector(".hero").classList.remove("shake"); void document.body.offsetWidth;
+  document.querySelector(".hero").classList.add("shake");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { partyTimer = setTimeout(endParty, 3500); return; }
+  var dpr = Math.min(window.devicePixelRatio || 1, 2), W = cv.width = innerWidth * dpr, H = cv.height = innerHeight * dpr;
+  var cols = ["#FF4E2B","#FF8A2B","#FFC14D","#FFE08A","#4CD9A0","#FFFFFF"], P = [];
+  function burst(x, y, n){
+    for (var i = 0; i < n; i++) {
+      var a = Math.random() * Math.PI * 2, sp = (4 + Math.random() * 9) * dpr;
+      P.push({ k: "c", x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 6 * dpr, s: (4 + Math.random() * 6) * dpr,
+               r: Math.random() * 6, vr: (Math.random() - .5) * .4, c: cols[Math.random() * cols.length | 0], life: 1 });
+    }
+  }
+  burst(W / 2, H * .45, 140); setTimeout(function(){ burst(W * .2, H * .35, 70); }, 350); setTimeout(function(){ burst(W * .8, H * .35, 70); }, 650);
+  var start = performance.now();
+  function frame(now){
+    var el = now - start; ctx.clearRect(0, 0, W, H);
+    // fire wall rising from the bottom
+    if (el < 3200) for (var i = 0; i < 9; i++) P.push({ k: "f", x: Math.random() * W, y: H + 10 * dpr, vx: (Math.random() - .5) * 1.5 * dpr,
+      vy: -(3 + Math.random() * 6) * dpr, s: (14 + Math.random() * 26) * dpr, life: 1 });
+    ctx.globalCompositeOperation = "lighter";
+    for (var j = P.length - 1; j >= 0; j--) {
+      var p = P[j];
+      if (p.k === "f") {
+        p.x += p.vx + Math.sin((p.y + el) / (40 * dpr)) * dpr; p.y += p.vy; p.life -= .014; p.s *= .985;
+        var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.s);
+        g.addColorStop(0, "rgba(255,230,150," + (.9 * p.life) + ")"); g.addColorStop(.4, "rgba(255,120,40," + (.6 * p.life) + ")"); g.addColorStop(1, "rgba(255,60,20,0)");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
+      } else {
+        p.vy += .25 * dpr; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life -= .006;
+        ctx.save(); ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = Math.max(p.life, 0);
+        ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore();
+      }
+      if (p.life <= 0 || p.y > H + 60 * dpr) P.splice(j, 1);
+    }
+    ctx.globalCompositeOperation = "source-over";
+    if (el < 5000 || P.length) raf = requestAnimationFrame(frame); else endParty();
+  }
+  raf = requestAnimationFrame(frame);
+  partyTimer = setTimeout(endParty, 6000);
+}
+function endParty(){ cancelAnimationFrame(raf); clearTimeout(partyTimer); $("party").hidden = true; }
+$("party").addEventListener("click", endParty);
+function checkParty(acc){
+  var seen = null; try { seen = localStorage.getItem("pl-seen"); } catch(e) {}
+  try { localStorage.setItem("pl-seen", String(acc)); } catch(e) {}
+  if (seen === null || acc <= +seen) return;
+  var T = (D && D.targets) || [], hit = T.some(function(x){ return x > +seen && x <= acc; });
+  celebrate(acc, hit);
+}
 $("langBtn").addEventListener("click", function(){ lang = lang === "ar" ? "en" : "ar"; try { localStorage.setItem("pl-lang", lang); } catch(e) {} applyLang(); });
 applyLang();
 load();
