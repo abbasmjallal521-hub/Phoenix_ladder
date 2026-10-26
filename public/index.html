@@ -117,6 +117,7 @@ details summary::-webkit-details-marker{display:none}
   </header>
 
   <div class="msg" id="msg" hidden></div>
+  <button type="button" id="retry" hidden data-i="retry">جرّب كمان مرة</button>
 
   <!-- notifications -->
   <section class="card bell" id="bellCard" hidden>
@@ -240,7 +241,7 @@ var L = {
     login:"دخول المسجّل", logout:"طلوع من وضع المسجّل", targets:"تارغتات البيبيات 👶", target:"التارغت", accounts:"بيبي", reached:"✓ وصلنا",
     remain:function(n){ return "باقي " + n; }, later:"بعدين", noDays:"لسا ما في أيام مسجّلة.", newAcc:function(n){ return "👶 +" + n + " بيبي جديد"; },
     del:"امسح", sure:"أكيد؟", updated:"آخر تحديث ", saving:"عم يحفظ… (أول مرة بالنهار ممكن تاخد دقيقة)", saved:"انسجّل ✓", setSaved:"انحفظ ✓",
-    wait:"لحظة…", badPw:"كلمة السر غلط", noNet:"ما قدرت أجيب الأرقام، تأكد من النت.", err:"صار خطأ، جرّب كمان مرة",
+    wait:"لحظة…", badPw:"كلمة السر غلط", noNet:"ما قدرت أجيب الأرقام هلق. رح جرّب لحالي كمان شوي.", retry:"جرّب كمان مرة", err:"صار خطأ، جرّب كمان مرة",
     bellTitle:"🔔 خلّي الإشعارات توصلك", bellText:"كل ما تنزل مصاري أو ينخلق بيبي أو يتعبّى هدف، بيوصلك إشعار عالتلفون.",
     ios1:"اكبس زر المشاركة تحت بـ Safari (المربع مع السهم).", ios2:"اختار «Add to Home Screen» / «إضافة إلى الشاشة الرئيسية».",
     ios3:"افتح الفينيكس من الأيقونة الجديدة، واكبس الزر هون.", bellBtn:"فعّل الإشعارات", bellOn:"🔔 الإشعارات شغّالة ✓",
@@ -258,7 +259,7 @@ var L = {
     login:"Recorder login", logout:"Leave recorder mode", targets:"Baby targets 👶", target:"Target", accounts:"babies", reached:"✓ Reached",
     remain:function(n){ return n + " to go"; }, later:"Later", noDays:"No days logged yet.", newAcc:function(n){ return "👶 +" + n + " new baby"; },
     del:"Delete", sure:"Sure?", updated:"Updated ", saving:"Saving… (first save of the day can take a minute)", saved:"Logged ✓", setSaved:"Saved ✓",
-    wait:"One moment…", badPw:"Wrong password", noNet:"Couldn't load the numbers. Check your connection.", err:"Something went wrong, try again",
+    wait:"One moment…", badPw:"Wrong password", noNet:"Couldn't load the numbers right now. Retrying automatically.", retry:"Try again", err:"Something went wrong, try again",
     bellTitle:"🔔 Get the notifications", bellText:"Every time money lands, a baby is born or a goal fills up, your phone gets a notification.",
     ios1:"Tap the Share button at the bottom of Safari (square with arrow).", ios2:"Choose “Add to Home Screen”.",
     ios3:"Open Phoenix from the new icon and tap the button here.", bellBtn:"Turn on notifications", bellOn:"🔔 Notifications are on ✓",
@@ -389,12 +390,27 @@ function applyLang(){
   $("quote").textContent = ""; bellState(); render();
 }
 
+// Try several sources in turn: GitHub's file CDN, GitHub's API, then our own save server.
+// (GitHub's API allows only 60 reads an hour per internet address, and phone networks share addresses.)
+function getJSON(url, opts){
+  var ctl = window.AbortController ? new AbortController() : null;
+  var timer = setTimeout(function(){ if (ctl) ctl.abort(); }, 9000);
+  opts = opts || {}; if (ctl) opts.signal = ctl.signal;
+  return fetch(url, opts).then(function(r){ clearTimeout(timer); if (!r.ok) throw 0; return r.json(); })
+    .then(function(j){ if (!j || !j.entries) throw 0; return j; });
+}
+var loading = false, failTimer = null;
 function load(){
-  fetch(DATA, { headers: { Accept: "application/vnd.github.raw" }, cache: "no-store" })
-    .then(function(r){ if (!r.ok) throw 0; return r.json(); })
-    .catch(function(){ return fetch(RAW + "?t=" + Date.now()).then(function(r){ if (!r.ok) throw 0; return r.json(); }); })
-    .then(function(j){ keep(j); if (!$("msg").hidden && $("msg").textContent === t("noNet")) msg(""); render(); })
-    .catch(function(){ if (!D) msg(t("noNet")); });
+  if (loading) return; loading = true;
+  getJSON(RAW + "?t=" + Date.now(), { cache: "no-store" })
+    .catch(function(){ return getJSON(DATA, { headers: { Accept: "application/vnd.github.raw" }, cache: "no-store" }); })
+    .catch(function(){ return getJSON(API + "/api/data", { cache: "no-store" }); })
+    .then(function(j){ keep(j); $("retry").hidden = true; if ($("msg").textContent === t("noNet")) msg(""); render(); })
+    .catch(function(){
+      if (!D) { msg(t("noNet")); $("retry").hidden = false; }
+      clearTimeout(failTimer); failTimer = setTimeout(load, 20000);
+    })
+    .then(function(){ loading = false; }, function(){ loading = false; });
 }
 function after(j, okText){ keep(j); render(); if (okText) msg(okText, 2500); }
 
@@ -584,7 +600,8 @@ function checkParty(acc){
 applyLang();
 load();
 wake();
-setInterval(function(){ if (!document.hidden) load(); }, 120000);
+setInterval(function(){ if (!document.hidden) load(); }, 300000);
+$("retry").addEventListener("click", function(){ msg(t("wait")); load(); });
 document.addEventListener("visibilitychange", function(){ if (!document.hidden) { load(); bellState(); } });
 </script>
 </body>
