@@ -5,14 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>سلّم الفينيكس</title>
 <meta name="theme-color" content="#130E1C">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="الفينيكس">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700&display=swap">
 <style>
 /* Single dark theme: ember on deep plum, poster headline */
 :root{
   --bg:#130E1C; --bg2:#1C1428; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
-  --fg:#F4EEF7; --muted:#A99BB5; --ember:#FF6A2B; --gold:#FFB648; --up:#4CD9A0; --up-soft:rgba(76,217,160,.14);
+  --fg:#F4EEF7; --muted:#A99BB5; --gold:#FFB648; --up:#4CD9A0; --up-soft:rgba(76,217,160,.14);
   --slot:rgba(255,255,255,.07); --down:#FF6B6B; --flame:linear-gradient(135deg,#FF4E2B 0%,#FF8A2B 45%,#FFC14D 100%);
+  --milk:#FFE9F1; --baby:#FF9EC4;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -21,9 +28,9 @@ html{background:var(--bg)}
 body{margin:0;min-height:100vh;color:var(--fg);font:15px/1.65 "Tajawal",system-ui,-apple-system,sans-serif;
   background:radial-gradient(120% 60% at 50% -10%,rgba(255,106,43,.22),transparent 60%),linear-gradient(var(--bg),var(--bg2));background-attachment:fixed}
 .wrap{max-width:500px;margin:0 auto;padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
-header{text-align:center;position:relative}
+header{text-align:center;position:relative;padding-top:4px}
 .lang{position:absolute;top:0;inset-inline-end:0;background:var(--card);color:var(--fg);border:1px solid var(--line);font-size:.8rem;padding:6px 12px;border-radius:99px}
-h1{font:400 2.1rem/1.1 "Lalezar","Tajawal",sans-serif;margin:0;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.01em}
+h1{font:400 2.1rem/1.1 "Lalezar","Tajawal",sans-serif;margin:0;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent}
 h2{font:700 1.02rem "Tajawal",sans-serif;margin:0}
 .sub{color:var(--muted);font-size:.82rem}
 .num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
@@ -31,33 +38,49 @@ h2{font:700 1.02rem "Tajawal",sans-serif;margin:0}
 .hero{text-align:center;gap:4px;padding:24px 18px;border-color:rgba(255,138,43,.35)}
 .hero .n{font:400 5.5rem/1 "Lalezar",sans-serif;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .l{color:var(--muted);font-weight:500}
-.ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:7px;margin-top:14px}
+.ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:7px;margin-top:14px}
 .slot{aspect-ratio:1;border-radius:50%;background:var(--slot);display:grid;place-items:center;font-size:.72rem;color:var(--muted);font-weight:700}
-.slot.on{background:var(--flame);color:#2A1206;box-shadow:0 0 14px rgba(255,120,43,.45)}
-.slot.ms{outline:2px solid var(--gold);outline-offset:2px}
+.slot.on{background:var(--milk);font-size:1.15rem;box-shadow:0 0 0 2px var(--baby),0 0 14px rgba(255,158,196,.45)}
+.slot.ms:not(.on){outline:2px dashed var(--gold);outline-offset:2px}
+.slot.ms.on{box-shadow:0 0 0 2px var(--gold),0 0 16px rgba(255,182,72,.6)}
 .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.big{font:400 2.2rem/1.1 "Lalezar",sans-serif;color:var(--fg)}
+.big{font:400 2.2rem/1.1 "Lalezar",sans-serif}
 .bar{height:12px;background:var(--slot);border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--flame);border-radius:99px;transition:width .7s}
+.bar.ok i{background:linear-gradient(90deg,#2FBF84,#7CF0BF)}
 .t{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
 .t:first-of-type{border-top:0}
 .pill{font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:99px;white-space:nowrap}
 .done{background:var(--up-soft);color:var(--up)}
 .next{background:rgba(255,138,43,.16);color:var(--gold)}
 .later{background:var(--slot);color:var(--muted)}
+.quote{border-color:rgba(255,158,196,.3);background:linear-gradient(135deg,rgba(255,158,196,.08),rgba(255,138,43,.06))}
+.quote p{margin:0;font-size:1.08rem;font-weight:700;line-height:1.55;min-height:3.1em}
+.quote .row{align-items:center}
+.goal{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.goal:first-of-type{border-top:0;padding-top:0}
+.goal .gh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.goal .gn{font-weight:700;min-width:0;overflow-wrap:anywhere}
+.goal .gv{font-size:.85rem;color:var(--muted)}
+.fill{display:flex;gap:8px}
+.fill input{flex:1}
+.fill button{padding:10px 14px}
 .day{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .day:first-child{border-top:0}
 .day .amt{color:var(--up);font-weight:700}
 .day .amt.z{color:var(--muted);font-weight:400}
-.tag{font-size:.74rem;color:var(--gold);font-weight:700}
+.tag{font-size:.74rem;color:var(--baby);font-weight:700}
 .note{font-size:.8rem;color:var(--muted)}
 .foot{text-align:center;color:var(--muted);font-size:.78rem;display:flex;flex-direction:column;gap:6px;align-items:center}
 .msg{background:rgba(255,138,43,.14);border:1px solid rgba(255,138,43,.3);border-radius:14px;padding:12px;font-size:.92rem;text-align:center}
+.bell{border-color:rgba(255,182,72,.35)}
+.bell ol{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:4px;font-size:.9rem}
 form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--muted);min-width:0}
 .full{grid-column:1/-1}
 input{font:inherit;font-size:16px;color:var(--fg);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:11px 12px;width:100%;min-width:0}
 button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 14px;cursor:pointer;background:var(--flame);color:#2A1206}
+button.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);font-weight:500}
 button:disabled{opacity:.6}
 .link{background:none;color:var(--muted);font-weight:500;font-size:.8rem;padding:4px 8px;text-decoration:underline}
 .del{background:none;color:var(--muted);font-weight:500;font-size:.8rem;padding:4px 8px}
@@ -65,21 +88,24 @@ button:disabled{opacity:.6}
 input:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 details summary{cursor:pointer;font:700 1.02rem "Tajawal",sans-serif;list-style:none}
 details summary::-webkit-details-marker{display:none}
-@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
-
+.sec{font-weight:700;font-size:.9rem;color:var(--fg);margin-top:6px}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:.88rem}
+.ph span{min-width:0;overflow-wrap:anywhere}
 /* celebration */
-#party{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:radial-gradient(circle at 50% 60%,rgba(255,90,30,.35),rgba(19,14,28,.85) 70%);cursor:pointer}
+#party{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:radial-gradient(circle at 50% 55%,rgba(255,120,170,.28),rgba(19,14,28,.9) 70%);cursor:pointer}
+#party.goal{background:radial-gradient(circle at 50% 55%,rgba(76,217,160,.25),rgba(19,14,28,.9) 70%)}
 #party canvas{position:absolute;inset:0;width:100%;height:100%}
-#party .boom{position:relative;text-align:center;padding:0 24px;animation:pop .7s cubic-bezier(.2,1.6,.4,1) both}
-#party .bird{font-size:5.5rem;line-height:1;filter:drop-shadow(0 0 24px rgba(255,120,40,.9));animation:flap 1s ease-in-out infinite alternate}
-#party .head{font:400 2.6rem/1.15 "Lalezar",sans-serif;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:10px}
-#party .line{font-size:1.15rem;font-weight:700;color:var(--fg);margin-top:6px}
+#party .boom{position:relative;text-align:center;padding:0 24px;animation:pop .7s cubic-bezier(.2,1.6,.4,1) both;max-width:440px}
+#party .bird{font-size:5.5rem;line-height:1;filter:drop-shadow(0 0 24px rgba(255,150,190,.9));animation:rock 1s ease-in-out infinite alternate}
+#party .head{font:400 2.5rem/1.15 "Lalezar",sans-serif;background:var(--flame);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:10px}
+#party .line{font-size:1.12rem;font-weight:700;margin-top:8px}
+#party .kit{font-size:1.8rem;margin-top:10px;letter-spacing:.2em}
 #party .tap{font-size:.8rem;color:var(--muted);margin-top:18px}
 .shake{animation:shake .5s ease-in-out 2}
 @keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes flap{from{transform:translateY(0) rotate(-6deg) scale(1)}to{transform:translateY(-10px) rotate(6deg) scale(1.08)}}
+@keyframes rock{from{transform:rotate(-10deg) translateY(0)}to{transform:rotate(10deg) translateY(-8px)}}
 @keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-6px,2px)}40%{transform:translate(6px,-2px)}60%{transform:translate(-4px,1px)}80%{transform:translate(4px,-1px)}}
-@media (prefers-reduced-motion:reduce){#party .boom,#party .bird,.shake{animation:none}}
+@media (prefers-reduced-motion:reduce){#party .boom,#party .bird,.shake{animation:none}.bar i{transition:none}}
 </style>
 </head>
 <body>
@@ -87,10 +113,28 @@ details summary::-webkit-details-marker{display:none}
   <header>
     <button class="lang" type="button" id="langBtn" aria-label="Language">EN</button>
     <h1 id="name">سلّم الفينيكس</h1>
-    <div class="sub"><span data-i="perAcc">كل حساب</span> <span class="num" id="size">$200</span> · <span data-i="auto">بتتحدّث لحالها</span></div>
+    <div class="sub"><span data-i="perAcc">كل بيبي (حساب)</span> <span class="num" id="size">$200</span> · <span data-i="auto">بتتحدّث لحالها</span></div>
   </header>
 
   <div class="msg" id="msg" hidden></div>
+
+  <!-- notifications -->
+  <section class="card bell" id="bellCard" hidden>
+    <h2 data-i="bellTitle">🔔 خلّي الإشعارات توصلك</h2>
+    <div class="note" data-i="bellText">كل ما تنزل مصاري أو ينخلق بيبي، بيوصلك إشعار عالتلفون.</div>
+    <ol id="iosSteps" hidden>
+      <li data-i="ios1">اكبس زر المشاركة تحت بـ Safari (المربع مع السهم).</li>
+      <li data-i="ios2">اختار «Add to Home Screen» / «إضافة إلى الشاشة الرئيسية».</li>
+      <li data-i="ios3">افتح الفينيكس من الأيقونة الجديدة، واكبس الزر هون.</li>
+    </ol>
+    <button type="button" id="bellBtn" data-i="bellBtn">فعّل الإشعارات</button>
+  </section>
+
+  <!-- phrase of the moment -->
+  <section class="card quote">
+    <div class="row"><h2 data-i="quoteTitle">كلمة الشباب 😏</h2><button class="link" type="button" id="moreQ" data-i="another">وحدة تانية</button></div>
+    <p id="quote"></p>
+  </section>
 
   <!-- recorder only -->
   <section class="card" id="addCard" hidden>
@@ -105,14 +149,25 @@ details summary::-webkit-details-marker{display:none}
 
   <section class="card hero">
     <div class="n num" id="acc">–</div>
-    <div class="l" data-i="accNow">حساب هلق</div>
+    <div class="l" data-i="accNow">بيبي (حساب) عنا هلق 👶</div>
     <div class="ladder" id="ladder"></div>
   </section>
 
   <section class="card">
-    <div class="row"><span data-i="wallet">بالواليت</span><span class="sub"><span data-i="left">باقي</span> <span class="num" id="remain">–</span> <span data-i="toNext">للحساب الجاي</span></span></div>
+    <div class="row"><span data-i="wallet">بالواليت</span><span class="sub"><span data-i="left">باقي</span> <span class="num" id="remain">–</span> <span data-i="toNext">للبيبي الجاي</span></span></div>
     <div class="big num" id="wallet">–</div>
     <div class="bar"><i id="bar"></i></div>
+  </section>
+
+  <section class="card" id="goalsCard">
+    <h2 data-i="goals">الأهداف 🎯</h2>
+    <div id="goals"></div>
+    <form id="goalForm" hidden>
+      <label style="max-width:80px"><span data-i="gEmoji">شكل</span><input id="gEmoji" maxlength="4" value="🎯"></label>
+      <label><span data-i="gName">اسم الهدف</span><input id="gName" maxlength="40" data-ip="gNamePh" placeholder="مثلاً: لابتوب" required></label>
+      <label class="full"><span data-i="gTarget">قديش بدّو ($)</span><input id="gTarget" type="number" inputmode="decimal" min="1" step="0.01" placeholder="400" required></label>
+      <button class="full" type="submit" data-i="gAdd">زيد هدف</button>
+    </form>
   </section>
 
   <section class="card" id="targets"></section>
@@ -130,9 +185,16 @@ details summary::-webkit-details-marker{display:none}
       <label><span data-i="startAcc">كم حساب بلّشنا فيهن</span><input id="xAcc" type="number" inputmode="numeric" min="0"></label>
       <label><span data-i="startWal">واليت البداية ($)</span><input id="xWal" type="number" inputmode="decimal" min="0" step="0.01"></label>
       <label><span data-i="accSize">حجم الحساب ($)</span><input id="xSize" type="number" inputmode="decimal" min="1"></label>
-      <label><span data-i="targetsL">التارغتات</span><input id="xT" inputmode="numeric" placeholder="5, 13"></label>
+      <label><span data-i="targetsL">تارغتات الحسابات</span><input id="xT" inputmode="numeric" placeholder="5, 13"></label>
       <button class="full" type="submit" data-i="saveSet">احفظ</button>
     </form>
+    <div class="sec" data-i="myPhrases">عباراتي الخاصة</div>
+    <form id="phForm" style="grid-template-columns:1fr auto">
+      <input id="phText" maxlength="160" data-ip="phPh" placeholder="اكتب عبارة تقيلة…">
+      <button type="submit" data-i="phAdd">زيد</button>
+    </form>
+    <div id="phList"></div>
+    <button type="button" class="ghost" id="testPush" data-i="testPush">ابعت إشعار تجربة للكل</button>
   </details>
 
   <div class="foot">
@@ -144,165 +206,259 @@ details summary::-webkit-details-marker{display:none}
     </form>
   </div>
 </main>
+
 <div id="party" hidden>
   <canvas id="fx"></canvas>
   <div class="boom">
-    <div class="bird">🔥</div>
+    <div class="bird" id="pIcon">👶</div>
     <div class="head" id="pHead"></div>
     <div class="line" id="pLine"></div>
+    <div class="kit" id="pKit">🍼 🧷 🧸</div>
     <div class="tap" id="pTap"></div>
   </div>
 </div>
 
+<script src="phrases.js"></script>
 <script>
-var $ = function(id){ return document.getElementById(id); };
-var money = function(v){ return "$" + (Math.round(v * 100) / 100).toLocaleString("en-US"); };
-var L = {
-  ar: { perAcc:"كل حساب", auto:"بتتحدّث لحالها", addTitle:"سجّل سحب اليوم", date:"التاريخ", amt:"الربح يلي سحبته ($)", amtPh:"مثلاً 85",
-    note:"ملاحظة (اختياري)", notePh:"مثلاً: يوم خسارة", save:"سجّل", accNow:"حساب هلق", wallet:"بالواليت", left:"باقي", toNext:"للحساب الجاي",
-    days:"آخر الأيام", total:"المجموع", loading:"عم يحمّل…", settings:"الإعدادات", planName:"اسم الخطة", startAcc:"كم حساب بلّشنا فيهن",
-    startWal:"واليت البداية ($)", accSize:"حجم الحساب ($)", targetsL:"التارغتات", saveSet:"احفظ", pwPh:"كلمة السر", enter:"دخول",
-    login:"دخول المسجّل", logout:"طلوع من وضع المسجّل", targets:"التارغتات", target:"التارغت", accounts:"حسابات", reached:"✓ وصلنا",
-    remain:function(n){ return "باقي " + n + " حساب"; }, later:"بعدين", noDays:"لسا ما في أيام مسجّلة.", newAcc:function(n){ return "+" + n + " حساب جديد"; },
-    del:"امسح", sure:"أكيد؟", updated:"آخر تحديث ", saving:"عم يحفظ… (أول مرة بالنهار ممكن تاخد دقيقة)", saved:"انسجّل ✓", setSaved:"انحفظ ✓",
-    wait:"لحظة…", badPw:"كلمة السر غلط", noNet:"ما قدرت أجيب الأرقام، تأكد من النت.", err:"صار خطأ، جرّب كمان مرة",
-    pHead:"حساب جديد!", pLine:function(n){ return "صاروا " + n + " حسابات 🚀"; }, pTarget:function(n){ return "🏆 وصلنا التارغت: " + n + " حسابات!"; }, pTap:"اكبس لتكمّل",
-    ord:["الأول","التاني","التالت","الرابع","الخامس","السادس"] },
-  en: { perAcc:"Each account", auto:"Updates automatically", addTitle:"Log today's withdrawal", date:"Date", amt:"Profit withdrawn ($)", amtPh:"e.g. 85",
-    note:"Note (optional)", notePh:"e.g. losing day", save:"Log it", accNow:"accounts now", wallet:"In the wallet", left:"", toNext:"left to the next account",
-    days:"Recent days", total:"Total", loading:"Loading…", settings:"Settings", planName:"Plan name", startAcc:"Starting accounts",
-    startWal:"Starting wallet ($)", accSize:"Account size ($)", targetsL:"Targets", saveSet:"Save", pwPh:"Password", enter:"Enter",
-    login:"Recorder login", logout:"Leave recorder mode", targets:"Targets", target:"Target", accounts:"accounts", reached:"✓ Reached",
-    remain:function(n){ return n + " to go"; }, later:"Later", noDays:"No days logged yet.", newAcc:function(n){ return "+" + n + " new account" + (n > 1 ? "s" : ""); },
-    del:"Delete", sure:"Sure?", updated:"Updated ", saving:"Saving… (first save of the day can take a minute)", saved:"Logged ✓", setSaved:"Saved ✓",
-    wait:"One moment…", badPw:"Wrong password", noNet:"Couldn't load the numbers. Check your connection.", err:"Something went wrong, try again",
-    pHead:"New account!", pLine:function(n){ return "We're at " + n + " accounts 🚀"; }, pTarget:function(n){ return "🏆 Target hit: " + n + " accounts!"; }, pTap:"Tap to continue",
-    ord:["1","2","3","4","5","6"] }
-};
-var lang = "ar";
-try { lang = localStorage.getItem("pl-lang") || "ar"; } catch(e) {}
-function t(k){ return L[lang][k]; }
-function applyLang(){
-  document.documentElement.lang = lang; document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  document.querySelectorAll("[data-i]").forEach(function(el){ el.textContent = t(el.dataset.i); });
-  document.querySelectorAll("[data-ip]").forEach(function(el){ el.placeholder = t(el.dataset.ip); });
-  $("langBtn").textContent = lang === "ar" ? "EN" : "عربي";
-  render();
-}
-// Where things live. API = the Render web service that saves; DATA = the file in GitHub that everyone reads.
+// Where things live. API = the Render service that saves and sends notifications; DATA = the file in GitHub everyone reads.
 var API = "https://phoenix-ladder-api.onrender.com";
 var DATA = "https://api.github.com/repos/abbasmjallal521-hub/Phoenix_ladder/contents/data.json?ref=main";
 var RAW = "https://raw.githubusercontent.com/abbasmjallal521-hub/Phoenix_ladder/main/data.json";
-var D = null, pw = null;
-try { pw = localStorage.getItem("pl-pw"); D = JSON.parse(localStorage.getItem("pl-data") || "null"); if (D) D._cached = true; } catch(e) {}
+
+var $ = function(id){ return document.getElementById(id); };
+var money = function(v){ return "$" + (Math.round(v * 100) / 100).toLocaleString("en-US"); };
+var D = null, pw = null, lang = "ar";
+try { pw = localStorage.getItem("pl-pw"); lang = localStorage.getItem("pl-lang") || "ar"; D = JSON.parse(localStorage.getItem("pl-data") || "null"); if (D) D._cached = true; } catch(e) {}
 function keep(j){ D = j; try { localStorage.setItem("pl-data", JSON.stringify(j)); } catch(e) {} }
-// wake the save server in the background so recording is quick when needed
 function wake(){ fetch(API + "/api/ping", { mode: "no-cors", cache: "no-store" }).catch(function(){}); }
 
-function msg(t){ var m = $("msg"); m.textContent = t || ""; m.hidden = !t; }
+var L = {
+  ar: { perAcc:"كل بيبي (حساب)", auto:"بتتحدّث لحالها", addTitle:"سجّل سحب اليوم", date:"التاريخ", amt:"الربح يلي سحبته ($)", amtPh:"مثلاً 85",
+    note:"ملاحظة (اختياري)", notePh:"مثلاً: يوم خسارة", save:"سجّل", accNow:"بيبي (حساب) عنا هلق 👶", wallet:"بالواليت", left:"باقي", toNext:"للبيبي الجاي",
+    days:"آخر الأيام", total:"المجموع", loading:"عم يحمّل…", settings:"الإعدادات", planName:"اسم الخطة", startAcc:"كم حساب بلّشنا فيهن",
+    startWal:"واليت البداية ($)", accSize:"حجم الحساب ($)", targetsL:"تارغتات الحسابات", saveSet:"احفظ", pwPh:"كلمة السر", enter:"دخول",
+    login:"دخول المسجّل", logout:"طلوع من وضع المسجّل", targets:"تارغتات البيبيات 👶", target:"التارغت", accounts:"بيبي", reached:"✓ وصلنا",
+    remain:function(n){ return "باقي " + n; }, later:"بعدين", noDays:"لسا ما في أيام مسجّلة.", newAcc:function(n){ return "👶 +" + n + " بيبي جديد"; },
+    del:"امسح", sure:"أكيد؟", updated:"آخر تحديث ", saving:"عم يحفظ… (أول مرة بالنهار ممكن تاخد دقيقة)", saved:"انسجّل ✓", setSaved:"انحفظ ✓",
+    wait:"لحظة…", badPw:"كلمة السر غلط", noNet:"ما قدرت أجيب الأرقام، تأكد من النت.", err:"صار خطأ، جرّب كمان مرة",
+    bellTitle:"🔔 خلّي الإشعارات توصلك", bellText:"كل ما تنزل مصاري أو ينخلق بيبي أو يتعبّى هدف، بيوصلك إشعار عالتلفون.",
+    ios1:"اكبس زر المشاركة تحت بـ Safari (المربع مع السهم).", ios2:"اختار «Add to Home Screen» / «إضافة إلى الشاشة الرئيسية».",
+    ios3:"افتح الفينيكس من الأيقونة الجديدة، واكبس الزر هون.", bellBtn:"فعّل الإشعارات", bellOn:"🔔 الإشعارات شغّالة ✓",
+    bellDenied:"الإشعارات مسكّرة. فتّحها من Settings ← Notifications ← الفينيكس.", bellNo:"هالمتصفّح ما بيدعم الإشعارات.",
+    quoteTitle:"كلمة الشباب 😏", another:"وحدة تانية", goals:"الأهداف 🎯", gEmoji:"شكل", gName:"اسم الهدف", gNamePh:"مثلاً: لابتوب",
+    gTarget:"قديش بدّو ($)", gAdd:"زيد هدف", gFill:"عبّي", gFillPh:"قديش؟", noGoals:"ما في أهداف لسا.", gDone:"🏆 تعبّى",
+    of:" من ", myPhrases:"عباراتي الخاصة", phPh:"اكتب عبارة تقيلة…", phAdd:"زيد", testPush:"ابعت إشعار تجربة للكل", pushSent:"انبعت ✓",
+    pHead:"انخلق بيبي جديد!", pKit:"🍼 🧷 🧸 🍼", gHead:"تعبّى الهدف!", pTap:"اكبس لتكمّل",
+    pLine:function(n){ return "صاروا " + n + " بيبيات، مع حفاضاتن وحليباتن 🍼"; }, pTarget:function(n){ return "🏆 وصلنا التارغت: " + n + " بيبي!"; },
+    ord:["الأول","التاني","التالت","الرابع","الخامس","السادس","السابع","التامن"] },
+  en: { perAcc:"Each baby (account)", auto:"Updates automatically", addTitle:"Log today's withdrawal", date:"Date", amt:"Profit withdrawn ($)", amtPh:"e.g. 85",
+    note:"Note (optional)", notePh:"e.g. losing day", save:"Log it", accNow:"babies (accounts) right now 👶", wallet:"In the wallet", left:"", toNext:"left to the next baby",
+    days:"Recent days", total:"Total", loading:"Loading…", settings:"Settings", planName:"Plan name", startAcc:"Starting accounts",
+    startWal:"Starting wallet ($)", accSize:"Account size ($)", targetsL:"Account targets", saveSet:"Save", pwPh:"Password", enter:"Enter",
+    login:"Recorder login", logout:"Leave recorder mode", targets:"Baby targets 👶", target:"Target", accounts:"babies", reached:"✓ Reached",
+    remain:function(n){ return n + " to go"; }, later:"Later", noDays:"No days logged yet.", newAcc:function(n){ return "👶 +" + n + " new baby"; },
+    del:"Delete", sure:"Sure?", updated:"Updated ", saving:"Saving… (first save of the day can take a minute)", saved:"Logged ✓", setSaved:"Saved ✓",
+    wait:"One moment…", badPw:"Wrong password", noNet:"Couldn't load the numbers. Check your connection.", err:"Something went wrong, try again",
+    bellTitle:"🔔 Get the notifications", bellText:"Every time money lands, a baby is born or a goal fills up, your phone gets a notification.",
+    ios1:"Tap the Share button at the bottom of Safari (square with arrow).", ios2:"Choose “Add to Home Screen”.",
+    ios3:"Open Phoenix from the new icon and tap the button here.", bellBtn:"Turn on notifications", bellOn:"🔔 Notifications are on ✓",
+    bellDenied:"Notifications are blocked. Turn them on in Settings → Notifications → Phoenix.", bellNo:"This browser doesn't support notifications.",
+    quoteTitle:"Word of the boys 😏", another:"Another one", goals:"Goals 🎯", gEmoji:"Icon", gName:"Goal name", gNamePh:"e.g. Laptop",
+    gTarget:"Amount needed ($)", gAdd:"Add goal", gFill:"Fill", gFillPh:"How much?", noGoals:"No goals yet.", gDone:"🏆 Full",
+    of:" of ", myPhrases:"My own lines", phPh:"Write a savage line…", phAdd:"Add", testPush:"Send a test notification to everyone", pushSent:"Sent ✓",
+    pHead:"A new baby is born!", pKit:"🍼 🧷 🧸 🍼", gHead:"Goal filled!", pTap:"Tap to continue",
+    pLine:function(n){ return "We have " + n + " babies now, diapers and milk included 🍼"; }, pTarget:function(n){ return "🏆 Target hit: " + n + " babies!"; },
+    ord:["1","2","3","4","5","6","7","8"] }
+};
+function t(k){ return L[lang][k]; }
+function msg(s, ms){ var m = $("msg"); m.textContent = s || ""; m.hidden = !s; if (ms) setTimeout(function(){ if (m.textContent === s) m.hidden = true; }, ms); }
 function today(){ var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
 function post(action, body){
   body = body || {}; body.password = pw;
   return fetch(API + "/api/" + action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
-    .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw new Error(r.status === 401 ? t("badPw") : t("err")); return j; }); });
+    .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw new Error(r.status === 401 ? t("badPw") : (j.error || t("err"))); return j; }); });
 }
 
-function render(){
-  if (!D) return;
+function newQuote(){ $("quote").textContent = PHRASES.pick(lang, "money", {}, lang === "ar" && D ? D.phrases : null); }
+
+function compute(){
   var acc = +D.startAccounts || 0, wal = +D.startWallet || 0, size = +D.size || 200, total = 0, days = [];
   D.entries.slice().sort(function(a,b){ return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; }).forEach(function(e){
     total += e.amt; wal += e.amt; var o = 0;
     while (wal >= size) { wal -= size; acc++; o++; }
     days.push({ id: e.id, d: e.d, a: e.amt, note: e.note, opened: o });
   });
-  var T = D.targets || [5, 13];
+  return { acc: acc, wal: wal, size: size, total: total, days: days };
+}
+
+function render(){
+  if (!D) return;
+  var c = compute(), admin = !!pw, T = D.targets || [5, 13], ORD = t("ord");
   $("name").textContent = D.name; document.title = D.name;
-  $("size").textContent = money(size);
-  $("acc").textContent = acc;
-  var top = Math.max(acc, T[T.length - 1] || acc), h = "";
-  for (var i = 1; i <= top; i++) h += '<div class="slot' + (i <= acc ? " on" : "") + (T.indexOf(i) >= 0 ? " ms" : "") + '">' + i + "</div>";
-  $("ladder").innerHTML = h;
-  $("wallet").textContent = money(wal);
-  $("remain").textContent = money(size - wal);
-  $("bar").style.width = Math.min(100, wal / size * 100) + "%";
-  $("total").textContent = money(total);
+  $("size").textContent = money(c.size);
+  $("acc").textContent = c.acc;
 
-  var found = false, ORD = t("ord"), th = "<h2>" + t("targets") + "</h2>";
-  T.forEach(function(tg, k){
-    var cls = acc >= tg ? "done" : (!found ? (found = true, "next") : "later");
-    var txt = acc >= tg ? t("reached") : t("remain")(tg - acc);
-    th += '<div class="t"><span>' + t("target") + " " + (ORD[k] || k + 1) + ': <b class="num">' + tg + "</b> " + t("accounts") + '</span><span class="pill ' + cls + '">' + txt + "</span></div>";
+  var lad = $("ladder"); lad.textContent = "";
+  var top = Math.max(c.acc, T[T.length - 1] || c.acc);
+  for (var i = 1; i <= top; i++) {
+    var s = el("div", "slot" + (i <= c.acc ? " on" : "") + (T.indexOf(i) >= 0 ? " ms" : ""), i <= c.acc ? "👶" : String(i));
+    s.title = String(i); lad.appendChild(s);
+  }
+  $("wallet").textContent = money(c.wal);
+  $("remain").textContent = money(c.size - c.wal);
+  $("bar").style.width = Math.min(100, c.wal / c.size * 100) + "%";
+  $("total").textContent = money(c.total);
+
+  // goals
+  var gl = $("goals"); gl.textContent = "";
+  var goals = D.goals || [];
+  if (!goals.length) gl.appendChild(el("div", "note", t("noGoals")));
+  goals.forEach(function(g){
+    var full = g.saved >= g.target, box = el("div", "goal");
+    var gh = el("div", "gh");
+    gh.appendChild(el("span", "gn", (g.emoji || "🎯") + " " + g.name));
+    var right = el("span"); right.style.cssText = "display:flex;align-items:center;gap:4px";
+    if (full) right.appendChild(el("span", "pill done", t("gDone")));
+    if (admin) { var d = el("button", "del", t("del")); d.type = "button"; d.dataset.gdel = g.id; right.appendChild(d); }
+    gh.appendChild(right); box.appendChild(gh);
+    var bar = el("div", "bar" + (full ? " ok" : "")), bi = el("i"); bi.style.width = Math.min(100, g.saved / g.target * 100) + "%"; bar.appendChild(bi); box.appendChild(bar);
+    var v = el("div", "gv num"); v.textContent = money(g.saved) + " / " + money(g.target) + "  ·  " + Math.min(100, Math.round(g.saved / g.target * 100)) + "%"; box.appendChild(v);
+    if (admin) {
+      var f = el("form", "fill"); f.dataset.gfill = g.id;
+      var inp = el("input"); inp.type = "number"; inp.inputMode = "decimal"; inp.step = "0.01"; inp.placeholder = t("gFillPh"); inp.id = "gf-" + g.id;
+      var b = el("button", null, t("gFill")); b.type = "submit";
+      f.appendChild(inp); f.appendChild(b); box.appendChild(f);
+    }
+    gl.appendChild(box);
   });
-  th += '<div class="t"><span>' + t("target") + " " + (ORD[T.length] || "") + '</span><span class="pill later">' + t("later") + "</span></div>";
-  $("targets").innerHTML = th;
+  $("goalForm").hidden = !admin;
 
-  var admin = !!pw, box = $("days"); box.textContent = "";
-  var list = days.slice().reverse().slice(0, admin ? 60 : 10);
-  if (!list.length) { var nd = document.createElement("div"); nd.className = "note"; nd.textContent = t("noDays"); box.appendChild(nd); }
+  // account targets
+  var tg = $("targets"); tg.textContent = ""; tg.appendChild(el("h2", null, t("targets")));
+  var found = false;
+  T.forEach(function(x, k){
+    var cls = c.acc >= x ? "done" : (!found ? (found = true, "next") : "later");
+    var row = el("div", "t"), lab = el("span");
+    lab.appendChild(document.createTextNode(t("target") + " " + (ORD[k] || k + 1) + ": "));
+    lab.appendChild(el("b", "num", String(x))); lab.appendChild(document.createTextNode(" " + t("accounts")));
+    row.appendChild(lab); row.appendChild(el("span", "pill " + cls, c.acc >= x ? t("reached") : t("remain")(x - c.acc)));
+    tg.appendChild(row);
+  });
+  var lr = el("div", "t"); lr.appendChild(el("span", null, t("target") + " " + (ORD[T.length] || ""))); lr.appendChild(el("span", "pill later", t("later"))); tg.appendChild(lr);
+
+  // days
+  var box = $("days"); box.textContent = "";
+  var list = c.days.slice().reverse().slice(0, admin ? 60 : 10);
+  if (!list.length) box.appendChild(el("div", "note", t("noDays")));
   list.forEach(function(d){
-    var row = document.createElement("div"); row.className = "day";
-    var left = document.createElement("div");
-    var dt = document.createElement("div"); dt.className = "num"; dt.textContent = d.d; left.appendChild(dt);
-    if (d.opened) { var tg = document.createElement("div"); tg.className = "tag"; tg.textContent = t("newAcc")(d.opened); left.appendChild(tg); }
-    if (d.note) { var n = document.createElement("div"); n.className = "note"; n.textContent = d.note; left.appendChild(n); }
-    var right = document.createElement("div"); right.style.cssText = "display:flex;align-items:center;gap:4px";
-    var am = document.createElement("span"); am.className = "amt num" + (d.a ? "" : " z"); am.textContent = money(d.a); right.appendChild(am);
-    if (admin) { var del = document.createElement("button"); del.className = "del"; del.type = "button"; del.textContent = t("del"); del.dataset.id = d.id; right.appendChild(del); }
+    var row = el("div", "day"), left = el("div");
+    left.appendChild(el("div", "num", d.d));
+    if (d.opened) left.appendChild(el("div", "tag", t("newAcc")(d.opened)));
+    if (d.note) left.appendChild(el("div", "note", d.note));
+    var right = el("div"); right.style.cssText = "display:flex;align-items:center;gap:4px";
+    right.appendChild(el("span", "amt num" + (d.a ? "" : " z"), money(d.a)));
+    if (admin) { var del = el("button", "del", t("del")); del.type = "button"; del.dataset.id = d.id; right.appendChild(del); }
     row.appendChild(left); row.appendChild(right); box.appendChild(row);
+  });
+
+  // phrases list (recorder)
+  var pl = $("phList"); pl.textContent = "";
+  (D.phrases || []).forEach(function(p, i){
+    var r = el("div", "ph"); r.appendChild(el("span", null, p));
+    var d = el("button", "del", t("del")); d.type = "button"; d.dataset.pdel = i; r.appendChild(d); pl.appendChild(r);
   });
 
   $("addCard").hidden = !admin; $("setCard").hidden = !admin;
   $("loginBtn").textContent = admin ? t("logout") : t("login");
   if (admin && !$("fDate").value) $("fDate").value = today();
-  if (admin && document.activeElement.form !== $("setForm")) {
+  if (admin && (!document.activeElement || document.activeElement.form !== $("setForm"))) {
     $("xName").value = D.name; $("xAcc").value = D.startAccounts; $("xWal").value = D.startWallet; $("xSize").value = D.size; $("xT").value = T.join(", ");
   }
-  if (D && !D._cached) checkParty(acc);
+  if (!$("quote").textContent) newQuote();
+  if (!D._cached) checkParty(c.acc);
   $("upd").textContent = t("updated") + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+}
+
+function applyLang(){
+  document.documentElement.lang = lang; document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-i]").forEach(function(e){ e.textContent = t(e.dataset.i); });
+  document.querySelectorAll("[data-ip]").forEach(function(e){ e.placeholder = t(e.dataset.ip); });
+  $("langBtn").textContent = lang === "ar" ? "EN" : "عربي";
+  $("quote").textContent = ""; bellState(); render();
 }
 
 function load(){
   fetch(DATA, { headers: { Accept: "application/vnd.github.raw" }, cache: "no-store" })
     .then(function(r){ if (!r.ok) throw 0; return r.json(); })
     .catch(function(){ return fetch(RAW + "?t=" + Date.now()).then(function(r){ if (!r.ok) throw 0; return r.json(); }); })
-    .then(function(j){ keep(j); msg(""); render(); })
+    .then(function(j){ keep(j); if (!$("msg").hidden && $("msg").textContent === t("noNet")) msg(""); render(); })
     .catch(function(){ if (!D) msg(t("noNet")); });
 }
+function after(j, okText){ keep(j); render(); if (okText) msg(okText, 2500); }
 
+// ---- recorder actions ----
 $("addForm").addEventListener("submit", function(ev){
   ev.preventDefault();
   var btn = $("addBtn"); btn.disabled = true; msg(t("saving"));
   post("entry", { d: $("fDate").value, amt: $("fAmt").value, note: $("fNote").value.trim() })
-    .then(function(j){ keep(j); $("fAmt").value = ""; $("fNote").value = ""; render(); msg(t("saved")); setTimeout(function(){ msg(""); }, 2500); })
+    .then(function(j){ $("fAmt").value = ""; $("fNote").value = ""; after(j, t("saved")); newQuote(); })
     .catch(function(e){ msg(e.message); })
     .finally(function(){ btn.disabled = false; });
 });
-
+function armed(b, run){
+  if (!b.classList.contains("arm")) { b.classList.add("arm"); b.textContent = t("sure"); setTimeout(function(){ b.classList.remove("arm"); b.textContent = t("del"); }, 3000); return; }
+  run();
+}
 $("days").addEventListener("click", function(ev){
   var b = ev.target.closest(".del"); if (!b) return;
-  if (!b.classList.contains("arm")) { b.classList.add("arm"); b.textContent = t("sure"); setTimeout(function(){ b.classList.remove("arm"); b.textContent = t("del"); }, 3000); return; }
-  post("delete", { id: b.dataset.id }).then(function(j){ keep(j); render(); }).catch(function(e){ msg(e.message); });
+  armed(b, function(){ post("delete", { id: b.dataset.id }).then(function(j){ after(j); }).catch(function(e){ msg(e.message); }); });
 });
-
+$("goals").addEventListener("click", function(ev){
+  var b = ev.target.closest("[data-gdel]"); if (!b) return;
+  armed(b, function(){ post("goalDel", { id: b.dataset.gdel }).then(function(j){ after(j); }).catch(function(e){ msg(e.message); }); });
+});
+$("goals").addEventListener("submit", function(ev){
+  var f = ev.target.closest("[data-gfill]"); if (!f) return;
+  ev.preventDefault();
+  var inp = f.querySelector("input"), v = parseFloat(inp.value); if (!v) return;
+  f.querySelector("button").disabled = true; msg(t("saving"));
+  post("goalFill", { id: f.dataset.gfill, amt: v }).then(function(j){ after(j, t("setSaved")); }).catch(function(e){ msg(e.message); f.querySelector("button").disabled = false; });
+});
+$("goalForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  post("goalAdd", { name: $("gName").value.trim(), target: $("gTarget").value, emoji: $("gEmoji").value.trim() || "🎯" })
+    .then(function(j){ $("gName").value = ""; $("gTarget").value = ""; after(j, t("setSaved")); }).catch(function(e){ msg(e.message); });
+});
 $("setForm").addEventListener("submit", function(ev){
   ev.preventDefault();
   post("settings", {
     name: $("xName").value.trim(), startAccounts: $("xAcc").value, startWallet: $("xWal").value, size: $("xSize").value,
     targets: $("xT").value.split(/[,،\s]+/).map(Number).filter(function(n){ return n > 0; })
-  }).then(function(j){ keep(j); render(); msg(t("setSaved")); setTimeout(function(){ msg(""); }, 2500); }).catch(function(e){ msg(e.message); });
+  }).then(function(j){ after(j, t("setSaved")); }).catch(function(e){ msg(e.message); });
 });
+$("phForm").addEventListener("submit", function(ev){
+  ev.preventDefault(); var v = $("phText").value.trim(); if (!v) return;
+  post("phraseAdd", { text: v }).then(function(j){ $("phText").value = ""; after(j, t("setSaved")); }).catch(function(e){ msg(e.message); });
+});
+$("phList").addEventListener("click", function(ev){
+  var b = ev.target.closest("[data-pdel]"); if (!b) return;
+  armed(b, function(){ post("phraseDel", { i: +b.dataset.pdel }).then(function(j){ after(j); }).catch(function(e){ msg(e.message); }); });
+});
+$("testPush").addEventListener("click", function(){
+  post("testPush", {}).then(function(){ msg(t("pushSent"), 2500); }).catch(function(e){ msg(e.message); });
+});
+$("moreQ").addEventListener("click", newQuote);
 
 $("loginBtn").addEventListener("click", function(){
   if (pw) { pw = null; try { localStorage.removeItem("pl-pw"); } catch(e) {} render(); return; }
   $("loginForm").hidden = !$("loginForm").hidden;
   if (!$("loginForm").hidden) { $("loginForm").style.display = "grid"; $("pw").focus(); }
 });
-
 $("loginForm").addEventListener("submit", function(ev){
   ev.preventDefault();
-  var p = $("pw").value;
-  msg(t("wait"));
+  var p = $("pw").value; msg(t("wait"));
   fetch(API + "/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: p }) })
     .then(function(r){
       if (!r.ok) throw new Error(t("badPw"));
@@ -310,71 +466,126 @@ $("loginForm").addEventListener("submit", function(ev){
       $("pw").value = ""; $("loginForm").hidden = true; $("loginForm").style.display = ""; msg(""); render();
     }).catch(function(e){ msg(e.message); });
 });
+$("langBtn").addEventListener("click", function(){ lang = lang === "ar" ? "en" : "ar"; try { localStorage.setItem("pl-lang", lang); } catch(e) {} applyLang(); });
 
+// ---- notifications ----
+var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+var standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+var canPush = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+var swReg = null;
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").then(function(r){ swReg = r; bellState(); }).catch(function(){});
 
-// ---- celebration: fire, embers and confetti when the account count goes up ----
+function bellState(){
+  var card = $("bellCard"), btn = $("bellBtn"), steps = $("iosSteps");
+  var on = false; try { on = localStorage.getItem("pl-sub") === "1"; } catch(e) {}
+  steps.hidden = true; btn.hidden = false; btn.disabled = false;
+  if (canPush && Notification.permission === "granted" && on) { card.hidden = true; return; }
+  card.hidden = false;
+  if (isIOS && !standalone) { steps.hidden = false; btn.hidden = true; return; }
+  if (!canPush) { btn.hidden = true; $("bellCard").querySelector(".note").textContent = t("bellNo"); return; }
+  if (Notification.permission === "denied") { btn.hidden = true; $("bellCard").querySelector(".note").textContent = t("bellDenied"); return; }
+  $("bellCard").querySelector(".note").textContent = t("bellText");
+}
+function urlB64(s){ s = s.replace(/-/g, "+").replace(/_/g, "/"); var raw = atob(s + "===".slice((s.length + 3) % 4)); var a = new Uint8Array(raw.length); for (var i = 0; i < raw.length; i++) a[i] = raw.charCodeAt(i); return a; }
+$("bellBtn").addEventListener("click", function(){
+  var btn = this; btn.disabled = true; msg(t("wait"));
+  Notification.requestPermission().then(function(p){
+    if (p !== "granted") throw new Error(t("bellDenied"));
+    return Promise.all([fetch(API + "/api/vapid").then(function(r){ return r.json(); }), swReg ? Promise.resolve(swReg) : navigator.serviceWorker.ready]);
+  }).then(function(res){
+    var key = res[0].key, reg = res[1];
+    return reg.pushManager.getSubscription().then(function(s){ return s || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64(key) }); });
+  }).then(function(sub){
+    return fetch(API + "/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON(), test: true }) });
+  }).then(function(r){
+    if (!r.ok) throw new Error(t("err"));
+    try { localStorage.setItem("pl-sub", "1"); } catch(e) {}
+    msg(t("bellOn"), 3000); bellState();
+  }).catch(function(e){ msg(e.message || t("err")); btn.disabled = false; bellState(); });
+});
+
+// ---- celebration: babies, milk, diapers, fire and confetti ----
 var partyTimer = null, raf = null;
-function celebrate(acc, hitTarget){
+function celebrate(kind, a, b){
   var box = $("party"), cv = $("fx"), ctx = cv.getContext("2d");
-  $("pHead").textContent = hitTarget ? "🏆" + " " + t("pHead") : t("pHead");
-  $("pLine").textContent = hitTarget ? t("pTarget")(acc) : t("pLine")(acc);
-  $("pTap").textContent = t("pTap");
+  box.className = kind === "goal" ? "goal" : "";
+  if (kind === "goal") {
+    $("pIcon").textContent = a.emoji || "🎯"; $("pHead").textContent = t("gHead");
+    $("pLine").textContent = PHRASES.pick(lang, "goal", { g: a.name }); $("pKit").textContent = "🏆 💵 🎉 💵";
+  } else {
+    $("pIcon").textContent = "👶"; $("pHead").textContent = (b ? "🏆 " : "") + t("pHead");
+    $("pLine").textContent = b ? t("pTarget")(a) : t("pLine")(a); $("pKit").textContent = t("pKit");
+  }
+  $("pTap").textContent = PHRASES.pick(lang, kind === "goal" ? "goal" : "baby", { n: a, g: a.name }) + "  ·  " + t("pTap");
   box.hidden = false;
-  document.querySelector(".hero").classList.remove("shake"); void document.body.offsetWidth;
-  document.querySelector(".hero").classList.add("shake");
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { partyTimer = setTimeout(endParty, 3500); return; }
+  var hero = document.querySelector(".hero"); hero.classList.remove("shake"); void hero.offsetWidth; hero.classList.add("shake");
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) { partyTimer = setTimeout(endParty, 4000); return; }
   var dpr = Math.min(window.devicePixelRatio || 1, 2), W = cv.width = innerWidth * dpr, H = cv.height = innerHeight * dpr;
-  var cols = ["#FF4E2B","#FF8A2B","#FFC14D","#FFE08A","#4CD9A0","#FFFFFF"], P = [];
+  var cols = ["#FF4E2B","#FF8A2B","#FFC14D","#FF9EC4","#4CD9A0","#FFFFFF"], P = [];
+  var emo = kind === "goal" ? ["🏆","💵","🎯","🎉","💰"] : ["👶","🍼","🧷","🧸","👶","🍼","💵"];
   function burst(x, y, n){
     for (var i = 0; i < n; i++) {
-      var a = Math.random() * Math.PI * 2, sp = (4 + Math.random() * 9) * dpr;
-      P.push({ k: "c", x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 6 * dpr, s: (4 + Math.random() * 6) * dpr,
+      var ang = Math.random() * Math.PI * 2, sp = (4 + Math.random() * 9) * dpr;
+      P.push({ k: "c", x: x, y: y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 6 * dpr, s: (4 + Math.random() * 6) * dpr,
                r: Math.random() * 6, vr: (Math.random() - .5) * .4, c: cols[Math.random() * cols.length | 0], life: 1 });
     }
   }
-  burst(W / 2, H * .45, 140); setTimeout(function(){ burst(W * .2, H * .35, 70); }, 350); setTimeout(function(){ burst(W * .8, H * .35, 70); }, 650);
+  function rain(n){ for (var i = 0; i < n; i++) P.push({ k: "e", x: Math.random() * W, y: -40 * dpr - Math.random() * H * .6, vx: (Math.random() - .5) * 1.2 * dpr,
+    vy: (2 + Math.random() * 3) * dpr, s: (26 + Math.random() * 22) * dpr, r: (Math.random() - .5), vr: (Math.random() - .5) * .06, e: emo[Math.random() * emo.length | 0], life: 1 }); }
+  burst(W / 2, H * .45, 120); rain(28);
+  setTimeout(function(){ burst(W * .2, H * .35, 60); rain(14); }, 400); setTimeout(function(){ burst(W * .8, H * .35, 60); rain(14); }, 800);
   var start = performance.now();
   function frame(now){
-    var el = now - start; ctx.clearRect(0, 0, W, H);
-    // fire wall rising from the bottom
-    if (el < 3200) for (var i = 0; i < 9; i++) P.push({ k: "f", x: Math.random() * W, y: H + 10 * dpr, vx: (Math.random() - .5) * 1.5 * dpr,
+    var elp = now - start; ctx.clearRect(0, 0, W, H);
+    if (elp < 3000) for (var i = 0; i < 7; i++) P.push({ k: "f", x: Math.random() * W, y: H + 10 * dpr, vx: (Math.random() - .5) * 1.5 * dpr,
       vy: -(3 + Math.random() * 6) * dpr, s: (14 + Math.random() * 26) * dpr, life: 1 });
-    ctx.globalCompositeOperation = "lighter";
     for (var j = P.length - 1; j >= 0; j--) {
       var p = P[j];
       if (p.k === "f") {
-        p.x += p.vx + Math.sin((p.y + el) / (40 * dpr)) * dpr; p.y += p.vy; p.life -= .014; p.s *= .985;
+        ctx.globalCompositeOperation = "lighter";
+        p.x += p.vx + Math.sin((p.y + elp) / (40 * dpr)) * dpr; p.y += p.vy; p.life -= .015; p.s *= .985;
         var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.s);
-        g.addColorStop(0, "rgba(255,230,150," + (.9 * p.life) + ")"); g.addColorStop(.4, "rgba(255,120,40," + (.6 * p.life) + ")"); g.addColorStop(1, "rgba(255,60,20,0)");
+        g.addColorStop(0, "rgba(255,230,150," + (.85 * p.life) + ")"); g.addColorStop(.4, "rgba(255,120,40," + (.55 * p.life) + ")"); g.addColorStop(1, "rgba(255,60,20,0)");
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
+        ctx.globalCompositeOperation = "source-over";
+      } else if (p.k === "e") {
+        p.x += p.vx + Math.sin((elp + p.s * 30) / 400) * .6 * dpr; p.y += p.vy; p.r += p.vr;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.font = p.s + "px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(p.e, 0, 0); ctx.restore();
+        if (p.y > H + 60 * dpr) p.life = 0;
       } else {
         p.vy += .25 * dpr; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life -= .006;
-        ctx.save(); ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = Math.max(p.life, 0);
-        ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore();
+        ctx.save(); ctx.globalAlpha = Math.max(p.life, 0); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore();
       }
-      if (p.life <= 0 || p.y > H + 60 * dpr) P.splice(j, 1);
+      if (p.life <= 0 || p.y > H + 80 * dpr) P.splice(j, 1);
     }
-    ctx.globalCompositeOperation = "source-over";
-    if (el < 5000 || P.length) raf = requestAnimationFrame(frame); else endParty();
+    if (elp < 6500 || P.length) raf = requestAnimationFrame(frame); else endParty();
   }
-  raf = requestAnimationFrame(frame);
-  partyTimer = setTimeout(endParty, 6000);
+  cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
+  clearTimeout(partyTimer); partyTimer = setTimeout(endParty, 7500);
 }
 function endParty(){ cancelAnimationFrame(raf); clearTimeout(partyTimer); $("party").hidden = true; }
 $("party").addEventListener("click", endParty);
+
 function checkParty(acc){
-  var seen = null; try { seen = localStorage.getItem("pl-seen"); } catch(e) {}
-  try { localStorage.setItem("pl-seen", String(acc)); } catch(e) {}
-  if (seen === null || acc <= +seen) return;
-  var T = (D && D.targets) || [], hit = T.some(function(x){ return x > +seen && x <= acc; });
-  celebrate(acc, hit);
+  var seen = null, gseen = null;
+  try { seen = localStorage.getItem("pl-seen"); gseen = JSON.parse(localStorage.getItem("pl-gdone") || "null"); } catch(e) {}
+  var doneIds = (D.goals || []).filter(function(g){ return g.saved >= g.target; }).map(function(g){ return g.id; });
+  try { localStorage.setItem("pl-seen", String(acc)); localStorage.setItem("pl-gdone", JSON.stringify(doneIds)); } catch(e) {}
+  if (seen !== null && acc > +seen) {
+    var T = D.targets || [], hit = T.some(function(x){ return x > +seen && x <= acc; });
+    return celebrate("baby", acc, hit);
+  }
+  if (gseen) {
+    var fresh = (D.goals || []).filter(function(g){ return doneIds.indexOf(g.id) >= 0 && gseen.indexOf(g.id) < 0; })[0];
+    if (fresh) celebrate("goal", fresh);
+  }
 }
-$("langBtn").addEventListener("click", function(){ lang = lang === "ar" ? "en" : "ar"; try { localStorage.setItem("pl-lang", lang); } catch(e) {} applyLang(); });
+
 applyLang();
 load();
 wake();
 setInterval(function(){ if (!document.hidden) load(); }, 120000);
-document.addEventListener("visibilitychange", function(){ if (!document.hidden) load(); });
+document.addEventListener("visibilitychange", function(){ if (!document.hidden) { load(); bellState(); } });
 </script>
 </body>
 </html>
